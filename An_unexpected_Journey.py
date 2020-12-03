@@ -2,14 +2,15 @@
 """
 Created on Fri Oct 30 07:32:48 2020
 
+
 @author: BerndKuebrich
 """
+#todo: Spieler soll beim stehen bleiben die bewegung unterbrechen
 
-import pygame                           #Pygame importieren
-from map import *
+from map import *                       #Map importieren
 pygame.init()                           #Pygame initalisieren
 
-WIDHT, HEIGHT, FPS = 500, 500, 10
+WIDHT, HEIGHT, FPS = 500, 500, 15
 GAME_RUNNING = True                       #Konstanten des screens
 
 #set Colors
@@ -23,47 +24,69 @@ clock = pygame.time.Clock()                         #Uhr initialisiert
 #Spielfigur
 #player_character = pygame.image.load("round_ghost/round_ghost_idle/sprite_0.png")
 #picture_size = player_character.get_rect()
-ghost = [pygame.image.load("round_ghost/round_ghost_walk/sprite_0.png"),pygame.image.load("round_ghost/round_ghost_walk/sprite_1.png"),pygame.image.load("round_ghost/round_ghost_walk/sprite_2.png"),pygame.image.load("round_ghost/round_ghost_walk/sprite_3.png"),pygame.image.load("round_ghost/round_ghost_walk/sprite_4.png"),pygame.image.load("round_ghost/round_ghost_walk/sprite_5.png")]
-ghost_frame = 0
-ghost_pos_x = 400
-ghost_pos_y = 300
-ghost_speed = 15
+#player sprites
+link_go_up = [pygame.image.load("sprites\link\link_b0.png"), pygame.image.load("sprites\link\link_b1.png"), pygame.image.load("sprites\link\link_b2.png"), pygame.image.load("sprites\link\link_b3.png"), pygame.image.load("sprites\link\link_b4.png"), pygame.image.load("sprites\link\link_b5.png"), pygame.image.load("sprites\link\link_b6.png"), pygame.image.load("sprites\link\link_b7.png")]
+link_go_down = [pygame.image.load("sprites\link\link_f0.png"), pygame.image.load("sprites\link\link_f1.png"), pygame.image.load("sprites\link\link_f2.png"), pygame.image.load("sprites\link\link_f3.png"), pygame.image.load("sprites\link\link_f4.png"), pygame.image.load("sprites\link\link_f5.png"), pygame.image.load("sprites\link\link_f6.png"), pygame.image.load("sprites\link\link_f4.png")]
+link_go_left = [pygame.image.load("sprites\link\link_l0.png"), pygame.image.load("sprites\link\link_l1.png"), pygame.image.load("sprites\link\link_l2.png"), pygame.image.load("sprites\link\link_l3.png"), pygame.image.load("sprites\link\link_l4.png"), pygame.image.load("sprites\link\link_l5.png"), pygame.image.load("sprites\link\link_l6.png"), pygame.image.load("sprites\link\link_l7.png")]
+link_go_right = [pygame.image.load("sprites\link\link_r0.png"), pygame.image.load("sprites\link\link_r1.png"), pygame.image.load("sprites\link\link_r2.png"), pygame.image.load("sprites\link\link_r3.png"), pygame.image.load("sprites\link\link_r4.png"), pygame.image.load("sprites\link\link_r5.png"), pygame.image.load("sprites\link\link_r6.png"), pygame.image.load("sprites\link\link_r7.png")]
+link_frame = 0
+link_pos_x = 400
+link_pos_y = 300
+link_speed = 15
+link_look_direction = "top"
 #main loop
 while GAME_RUNNING:
+    # GAME MAP
+    for row in range(MAPHEIGHT):
+        for column in range(MAPWIDTH):
+            DISPLAYSURFACE.blit(TEXTURES[MAP1[row][column]], (column * TILESIZE, row * TILESIZE))
+
+    #Spielfigur anzeigen
+    if link_look_direction == "top":
+        DISPLAYSURFACE.blit(link_go_up[link_frame], (link_pos_x, link_pos_y))
+    elif link_look_direction == "down":
+        DISPLAYSURFACE.blit(link_go_down[link_frame], (link_pos_x, link_pos_y))
+    elif link_look_direction == "left":
+        DISPLAYSURFACE.blit(link_go_left[link_frame], (link_pos_x, link_pos_y))
+    elif link_look_direction == "right":
+        DISPLAYSURFACE.blit(link_go_right[link_frame], (link_pos_x, link_pos_y))
     #Überprüfen, ob Nutzer eine Aktion durchgeführt hat
     for event in pygame.event.get():
         if event.type == pygame.QUIT: 
             GAME_RUNNING = False
-    #Spielfigur Steuerung        
+
+
+    # Überprüfen, ob Nutzer eine Taste drückt
     buffer = pygame.key.get_pressed()
     if buffer[pygame.K_UP]:
-        ghost_pos_y -= ghost_speed
+        link_look_direction = "top"
+        DISPLAYSURFACE.blit(link_go_up[link_frame], (link_pos_x, link_pos_y))
+        link_pos_y -= link_speed
+        link_frame += 1
+        if link_frame > 7:
+            link_frame = 0
     elif buffer[pygame.K_DOWN]:
-        ghost_pos_y += ghost_speed
+        link_look_direction = "down"
+        DISPLAYSURFACE.blit(link_go_down[link_frame], (link_pos_x, link_pos_y))
+        link_pos_y += link_speed
+        link_frame += 1
+        if link_frame > 7:
+            link_frame = 0
     elif buffer[pygame.K_RIGHT]:
-        ghost_pos_x += ghost_speed  
+        link_look_direction = "right"
+        DISPLAYSURFACE.blit(link_go_right[link_frame], (link_pos_x, link_pos_y))
+        link_pos_x += link_speed
+        link_frame += 1
+        if link_frame > 7:
+            link_frame = 0
     elif buffer[pygame.K_LEFT]:
-        ghost_pos_x -= ghost_speed  
-        
-            
-    #GAME MAP
-    for row in range(MAPHEIGHT):
-        for column in range(MAPWIDTH):
-            DISPLAYSURFACE.blit(TEXTURES[MAP1[row][column]], (column*TILESIZE, row*TILESIZE))        
-    
-          
-    
-    #Spiellogik
-    
-    #Spielfeld löschen nach jedem FPS
-    
+        link_look_direction = "left"
+        DISPLAYSURFACE.blit(link_go_left[link_frame], (link_pos_x, link_pos_y))
+        link_pos_x -= link_speed
+        link_frame += 1
+        if link_frame > 7:
+            link_frame = 0
 
-    #Spielfeld/Spielfiguren
-    ghost_frame +=1
-    if ghost_frame > 5:
-        ghost_frame = 0
-    DISPLAYSURFACE.blit(ghost[ghost_frame], (ghost_pos_x,ghost_pos_y))
-    
     #Screen aktualisieren
     pygame.display.update()
     clock.tick(FPS)  
