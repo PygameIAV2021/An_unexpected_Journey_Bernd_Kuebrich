@@ -7,9 +7,6 @@ Created on Fri Nov 27 08:29:35 2020
 import pygame
 import enum
 
-
-
-
 # TILES
 class Tiles(enum.Enum):
     DIRT = 0
@@ -49,15 +46,9 @@ MAP1= [
 MAPWIDTH = len(MAP1[0])
 MAPHEIGHT = len(MAP1)
 
-
-#MAP
+#MAP ANZEIGE
 DISPLAYSURFACE = pygame.display.set_mode((MAPWIDTH*TILESIZE, MAPHEIGHT*TILESIZE))
 
-#COLORS
-WHITE = (200,200,200)
-BLACK = (0,0,0)
-BLUE = (30,144,255)
-GREEN = (60,179,113)
-RED = (178,0,0)
+
 
 
