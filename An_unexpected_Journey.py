@@ -6,8 +6,8 @@ Created on Fri Oct 30 07:32:48 2020
 """
 
 #Imports
-from map import *                       # Map importieren
-from classes import *                   # Klassen importieren
+from classes import pygame, Spielfiguren
+from map import levelHolder, Map, DISPLAYSURFACE
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -18,9 +18,11 @@ pygame.display.set_caption("An unexpected Journey")
 #Variablen
 FPS = 15
 GAME_RUNNING = True
+level = 0
 
+currentMap = Map(levelHolder[level].map) # type: Map
 #Spielerinstanz erzeugen
-classlink = Spielfiguren("Link", 50,300, "down")
+classlink = Spielfiguren("Link", levelHolder[level].startPosition, "down", currentMap)
 
 #main loop
 while GAME_RUNNING:
@@ -48,11 +50,23 @@ while GAME_RUNNING:
     else:
         classlink.spritecounter = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
 
-    # GAME MAP
-    for x in range(0, MAPHEIGHT):
-        for y in range(0, MAPWIDTH):
-            texture = spielfeld[x][y].type
-            DISPLAYSURFACE.blit(TEXTURES[texture], (y * TILESIZE, x * TILESIZE))
+    changeLevel = levelHolder[level].isOnChangePosition(classlink)
+    if changeLevel == 'next':
+        level += 1
+        currentMap = Map(levelHolder[level].map)  # type: Map
+        classlink.changeLevel(levelHolder[level].startPosition, currentMap)
+    elif changeLevel == 'previous':
+        level -= 1
+        currentMap = Map(levelHolder[level].map)  # type: Map
+        classlink.changeLevel(levelHolder[level].previousPosition, currentMap)
+    currentMap.draw()
+
+    # if levelHolder[level].nextLevelRect is not None:
+    #     for rect in levelHolder[level].nextLevelRect: #type: pygame.Rect
+    #         pygame.draw.rect(DISPLAYSURFACE, (255, 0, 0), rect)
+    # if levelHolder[level].previousLevelRect is not None:
+    #     for rect in levelHolder[level].previousLevelRect:  # type: pygame.Rect
+    #         pygame.draw.rect(DISPLAYSURFACE, (0, 0, 255), rect)
 
     classlink.draw()
     #Screen aktualisieren
