@@ -4,7 +4,7 @@ from map import *
 spielfeld = [[0 for y in range(MAPWIDTH)] for x in range(MAPHEIGHT)]
 
 class Spielfiguren:
-    def __init__(self, name, pos_x, pos_y, look, speed=20, sprite=0):
+    def __init__(self, name, pos_x, pos_y, look, speed=10, sprite=0):
         self.name = name
         self.speed = speed
         self.look = look
