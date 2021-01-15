@@ -2,7 +2,6 @@
 """
 Created on Fri Oct 30 07:32:48 2020
 
-
 @author: BerndKuebrich
 """
 
@@ -31,7 +30,6 @@ link_go_left = [pygame.image.load("sprites/link/link_l3.png"), pygame.image.load
 link_go_right = [pygame.image.load("sprites/link/link_r0.png"), pygame.image.load("sprites/link/link_r1.png"), pygame.image.load("sprites/link/link_r2.png"), pygame.image.load("sprites/link/link_r3.png"), pygame.image.load("sprites/link/link_r4.png"), pygame.image.load("sprites/link/link_r5.png"), pygame.image.load("sprites/link/link_r6.png"), pygame.image.load("sprites/link/link_r7.png")]
 
 #main loop
-
 while GAME_RUNNING:
     # GAME MAP
     for x in range(0, MAPHEIGHT):
@@ -57,7 +55,7 @@ while GAME_RUNNING:
         if event.type == pygame.QUIT:
             GAME_RUNNING = False
 
-    # Überprüfen, ob Nutzer eine Taste drückt
+    #Überprüfen, ob Nutzer eine Taste drückt
     buffer = pygame.key.get_pressed()
 
     #Bewegung nach Oben
@@ -66,6 +64,9 @@ while GAME_RUNNING:
         DISPLAYSURFACE.blit(link_go_up[classlink.sprite], (classlink.rect.left, classlink.rect.top))
         if classlink.rect.top >= classlink.speed: #if Bedingung damit die figur nicht über den oberen rand hinausgeht
             classlink.tryToMove(0, -1*classlink.speed)
+            classlink.sprite += 1
+            if classlink.sprite > 7:
+                classlink.sprite = 0
 
     #Bewegung nach Unten
     elif buffer[pygame.K_DOWN]:
