@@ -10,11 +10,13 @@ from classes import pygame, Player, Sword, Shield, Ganon, Bow
 from map import levelHolder, Map, DISPLAYSURFACE, MAPHEIGHT, TILESIZE
 from game import Game
 import sys
+from os import path
+from pygame.locals import *
+
 
 pygame.init()
+pygame.mixer.init()
 clock = pygame.time.Clock()
-
-
 
 #COLORS
 WHITE = (200, 200, 200)
@@ -34,6 +36,7 @@ HEALTHFONT = pygame.font.SysFont('FreeSansBold.ttf', 40)
 
 #Variablen
 currentMap = Map(levelHolder[LEVEL].map) # type: Map
+music = path.join(path.dirname(__file__), 'Music')
 
 
 #Instanzen erzeugen
@@ -45,6 +48,10 @@ bow_instance = Bow()
 menu = Game()
 menu.running = True
 
+#Musik
+pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(loops = -1)
 
 #Benötigte Listen
 GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
