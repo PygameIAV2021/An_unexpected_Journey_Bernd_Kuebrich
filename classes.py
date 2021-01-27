@@ -1,7 +1,7 @@
 import pygame
 from map import Map, TILESIZE, MAPHEIGHT, MAPWIDTH, DISPLAYSURFACE, Tiles
 
-class Player:
+class Player():
     def __init__(self, name, pos, look, map: Map, speed=10, spritecounter=0, health=100, inventory = []):
         self.name = name
         self.map = map
@@ -87,4 +87,18 @@ class Shield():
         self.NAME = 'SHIELD'
         self.IMAGE = pygame.image.load('./sprites/shield.png')
         self.POS = [250, 250]
+        self.PLACED = True
+
+class Ganon():
+    def __init__(self, Ganon_pos = [300, 800]):
+        self.Ganon = pygame.image.load('./sprites/ganon.png')
+        self.Ganon_pos = Ganon_pos
+        self.Health = 250
+        self.rect = pygame.Rect(Ganon_pos[0], Ganon_pos[1], 100, 100)
+
+class Bow():
+    def __init__(self):
+        self.NAME = 'BOW'
+        self.IMAGE = pygame.transform.scale(pygame.image.load('./sprites/bow.png'), (50, 50))
+        self.POS = [400, 400]
         self.PLACED = True
