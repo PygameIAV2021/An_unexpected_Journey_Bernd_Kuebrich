@@ -6,23 +6,41 @@ Created on Fri Oct 30 07:32:48 2020
 """
 
 #Imports
-from classes import pygame, Spielfiguren
-from map import levelHolder, Map, DISPLAYSURFACE
+from classes import pygame, Player, Sword
+from map import levelHolder, Map, DISPLAYSURFACE, MAPHEIGHT, TILESIZE
 
 pygame.init()
 clock = pygame.time.Clock()
 
+#COLORS
+WHITE = (200, 200, 200)
+BLACK = (0, 0, 0)
+BLUE = (30, 144, 255)
+GREEN = (60, 179, 113)
+RED = (178, 0, 0)
+
 #Name im Screenhead
 pygame.display.set_caption("An unexpected Journey")
 
-#Variablen
+#Konstanten
 FPS = 15
 GAME_RUNNING = True
-level = 0
+LEVEL = 0
+HEALTHFONT = pygame.font.SysFont('FreeSansBold.ttf', 40)
+INVENTORYFONT = pygame.font.SysFont('FreeSansBold.ttf', 20)
 
-currentMap = Map(levelHolder[level].map) # type: Map
-#Spielerinstanz erzeugen
-classlink = Spielfiguren("Link", levelHolder[level].startPosition, "down", currentMap)
+#Variablen
+currentMap = Map(levelHolder[LEVEL].map) # type: Map
+
+#Instanzen erzeugen
+player_instance = Player("Link", levelHolder[LEVEL].startPosition, "down", currentMap)
+sword_instance = Sword()
+
+#Benötigte Listen
+GAME_ITEMS = [sword_instance]
+
+
+
 
 #main loop
 while GAME_RUNNING:
@@ -37,30 +55,32 @@ while GAME_RUNNING:
 
     #Bewegung nach Oben
     if buffer[pygame.K_UP]:
-        move = classlink.tryToMove("up")
+        move = player_instance.tryToMove("up")
     #Bewegung nach Unten
     elif buffer[pygame.K_DOWN]:
-        classlink.tryToMove("down")
+        player_instance.tryToMove("down")
     #Bewegung nach Rechts
     elif buffer[pygame.K_RIGHT]:
-        classlink.tryToMove("right")
+        player_instance.tryToMove("right")
     #Bewegung nach Links
     elif buffer[pygame.K_LEFT]:
-        classlink.tryToMove("left")
+        player_instance.tryToMove("left")
     else:
-        classlink.spritecounter = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
+        player_instance.spritecounter = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
 
-    changeLevel = levelHolder[level].isOnChangePosition(classlink)
+    #Level/Map Wechsel
+    changeLevel = levelHolder[LEVEL].isOnChangePosition(player_instance)
     if changeLevel == 'next':
-        level += 1
-        currentMap = Map(levelHolder[level].map)  # type: Map
-        classlink.changeLevel(levelHolder[level].startPosition, currentMap)
+        LEVEL += 1
+        currentMap = Map(levelHolder[LEVEL].map)  # type: Map
+        player_instance.changeLevel(levelHolder[LEVEL].startPosition, currentMap)
     elif changeLevel == 'previous':
-        level -= 1
-        currentMap = Map(levelHolder[level].map)  # type: Map
-        classlink.changeLevel(levelHolder[level].previousPosition, currentMap)
+        LEVEL -= 1
+        currentMap = Map(levelHolder[LEVEL].map)  # type: Map
+        player_instance.changeLevel(levelHolder[LEVEL].previousPosition, currentMap)
     currentMap.draw()
 
+    #Level/Map Wechsel Rechtecke anzeigen
     # if levelHolder[level].nextLevelRect is not None:
     #     for rect in levelHolder[level].nextLevelRect: #type: pygame.Rect
     #         pygame.draw.rect(DISPLAYSURFACE, (255, 0, 0), rect)
@@ -68,7 +88,36 @@ while GAME_RUNNING:
     #     for rect in levelHolder[level].previousLevelRect:  # type: pygame.Rect
     #         pygame.draw.rect(DISPLAYSURFACE, (0, 0, 255), rect)
 
-    classlink.draw()
+    #Lebensleiste anzeigen
+    PLAYER_HEALTH_BAR_TEXT = HEALTHFONT.render('LINK HEALTH:', True, GREEN, BLACK)
+    DISPLAYSURFACE.blit(PLAYER_HEALTH_BAR_TEXT, (15, MAPHEIGHT * TILESIZE - 700))
+    DISPLAYSURFACE.blit(HEALTHFONT.render(str(player_instance.health), True, GREEN, BLACK), (225, MAPHEIGHT * TILESIZE - 700))
+
+    ##Spielerinventar anzeigen
+    #INVENTORY_POSITION = 250
+    #for item in player_instance.inventory:
+    #    DISPLAYSURFACE.blit(item.IMAGE, (INVENTORY_POSITION, MAPHEIGHT * TILESIZE + 35))
+    #    INVENTORY_POSITION += 10
+    #    INVENTORY_TEXT = INVENTORYFONT.render(item.NAME, True, WHITE, BLACK)
+    #    DISPLAYSURFACE.blit(INVENTORY_TEXT, (INVENTORY_POSITION, MAPHEIGHT * TILESIZE + 15))
+    #    INVENTORY_POSITION += 100
+
+    #Items anzeigen
+    for item in GAME_ITEMS:
+        if item.PLACED == True and LEVEL == 0:
+            DISPLAYSURFACE.blit(item.IMAGE, (item.POS[0], item.POS[1]))
+
+    #Items aufheben
+    #for item in GAME_ITEMS:
+    #    if player_instance.PLAYER_POS == item.POS and item.PLACED:
+    #       player_instance.inventory.append(item)
+    #       item.PLACED = False
+    #       if item in GAME_WEAPONS:
+    #            PLAYER.WEAPON = item
+
+
+
+    player_instance.draw()
     #Screen aktualisieren
     pygame.display.update()
     clock.tick(FPS)
