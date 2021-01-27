@@ -77,7 +77,6 @@ class Sword():
     def __init__(self):
         self.NAME = 'Sword'
         self.IMAGE = pygame.image.load('sprites/sword.png')
-        self.IMAGE_ARMED = pygame.transform.scale(self.IMAGE, (35, 35))
         self.POS = [500, 500]
         self.PLACED = True
 
