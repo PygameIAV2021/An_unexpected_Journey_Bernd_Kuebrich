@@ -1,7 +1,7 @@
 import pygame
 from map import Map, TILESIZE, MAPHEIGHT, MAPWIDTH, DISPLAYSURFACE, Tiles
 
-class Player:
+class Player():
     def __init__(self, name, pos, look, map: Map, speed=10, spritecounter=0, health=100, inventory = []):
         self.name = name
         self.map = map
@@ -30,7 +30,7 @@ class Player:
                 moveX, moveY = (0, -1*self.speed)
         elif direction == "right":
             self.look = "right"
-            if self.rect.left < (MAPWIDTH * TILESIZE) - TILESIZE:  # if Bedingung damit die figur nicht über den rechten rand hinausgeht
+            if self.rect.left< (MAPWIDTH * TILESIZE) - TILESIZE:  # if Bedingung damit die figur nicht über den rechten rand hinausgeht
                 moveX, moveY = (self.speed, 0)
         elif direction == "left":
             self.look = "left"
@@ -79,4 +79,26 @@ class Sword():
         self.IMAGE = pygame.image.load('sprites/sword.png')
         self.IMAGE_ARMED = pygame.transform.scale(self.IMAGE, (35, 35))
         self.POS = [500, 500]
+        self.PLACED = True
+
+
+class Shield():
+    def __init__(self):
+        self.NAME = 'SHIELD'
+        self.IMAGE = pygame.image.load('./sprites/shield.png')
+        self.POS = [250, 250]
+        self.PLACED = True
+
+class Ganon():
+    def __init__(self, Ganon_pos = [300, 800]):
+        self.Ganon = pygame.image.load('./sprites/ganon.png')
+        self.Ganon_pos = Ganon_pos
+        self.Health = 250
+        self.rect = pygame.Rect(Ganon_pos[0], Ganon_pos[1], 100, 100)
+
+class Bow():
+    def __init__(self):
+        self.NAME = 'BOW'
+        self.IMAGE = pygame.transform.scale(pygame.image.load('./sprites/bow.png'), (50, 50))
+        self.POS = [400, 400]
         self.PLACED = True

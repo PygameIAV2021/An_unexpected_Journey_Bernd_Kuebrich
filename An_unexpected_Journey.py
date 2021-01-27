@@ -6,11 +6,13 @@ Created on Fri Oct 30 07:32:48 2020
 """
 
 #Imports
-from classes import pygame, Player, Sword
+from classes import pygame, Player, Sword, Shield, Ganon, Bow
 from map import levelHolder, Map, DISPLAYSURFACE, MAPHEIGHT, TILESIZE
 
 pygame.init()
 clock = pygame.time.Clock()
+
+
 
 #COLORS
 WHITE = (200, 200, 200)
@@ -23,11 +25,10 @@ RED = (178, 0, 0)
 pygame.display.set_caption("An unexpected Journey")
 
 #Konstanten
-FPS = 15
+FPS = 20
 GAME_RUNNING = True
 LEVEL = 0
 HEALTHFONT = pygame.font.SysFont('FreeSansBold.ttf', 40)
-INVENTORYFONT = pygame.font.SysFont('FreeSansBold.ttf', 20)
 
 #Variablen
 currentMap = Map(levelHolder[LEVEL].map) # type: Map
@@ -35,15 +36,16 @@ currentMap = Map(levelHolder[LEVEL].map) # type: Map
 #Instanzen erzeugen
 player_instance = Player("Link", levelHolder[LEVEL].startPosition, "down", currentMap)
 sword_instance = Sword()
+shield_instance = Shield()
+ganon = Ganon()
+bow_instance = Bow()
 
 #Benötigte Listen
-GAME_ITEMS = [sword_instance]
-
-
-
+GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
 
 #main loop
 while GAME_RUNNING:
+
 
     #Überprüfen, ob Nutzer eine Aktion durchgeführt hat
     for event in pygame.event.get():
@@ -88,19 +90,10 @@ while GAME_RUNNING:
     #     for rect in levelHolder[level].previousLevelRect:  # type: pygame.Rect
     #         pygame.draw.rect(DISPLAYSURFACE, (0, 0, 255), rect)
 
-    #Lebensleiste anzeigen
-    PLAYER_HEALTH_BAR_TEXT = HEALTHFONT.render('LINK HEALTH:', True, GREEN, BLACK)
-    DISPLAYSURFACE.blit(PLAYER_HEALTH_BAR_TEXT, (15, MAPHEIGHT * TILESIZE - 700))
+    #Spieler-Lebensleiste anzeigen
+    player_health_bar_text = HEALTHFONT.render('LINK HEALTH:', True, GREEN, BLACK)
+    DISPLAYSURFACE.blit(player_health_bar_text, (15, MAPHEIGHT * TILESIZE - 700))
     DISPLAYSURFACE.blit(HEALTHFONT.render(str(player_instance.health), True, GREEN, BLACK), (225, MAPHEIGHT * TILESIZE - 700))
-
-    ##Spielerinventar anzeigen
-    #INVENTORY_POSITION = 250
-    #for item in player_instance.inventory:
-    #    DISPLAYSURFACE.blit(item.IMAGE, (INVENTORY_POSITION, MAPHEIGHT * TILESIZE + 35))
-    #    INVENTORY_POSITION += 10
-    #    INVENTORY_TEXT = INVENTORYFONT.render(item.NAME, True, WHITE, BLACK)
-    #    DISPLAYSURFACE.blit(INVENTORY_TEXT, (INVENTORY_POSITION, MAPHEIGHT * TILESIZE + 15))
-    #    INVENTORY_POSITION += 100
 
     #Items anzeigen
     for item in GAME_ITEMS:
@@ -108,13 +101,26 @@ while GAME_RUNNING:
             DISPLAYSURFACE.blit(item.IMAGE, (item.POS[0], item.POS[1]))
 
     #Items aufheben
-    #for item in GAME_ITEMS:
-    #    if player_instance.PLAYER_POS == item.POS and item.PLACED:
-    #       player_instance.inventory.append(item)
-    #       item.PLACED = False
-    #       if item in GAME_WEAPONS:
-    #            PLAYER.WEAPON = item
+    for item in GAME_ITEMS:
+        if player_instance.rect.left in range(475,525) and player_instance.rect.top in range(475,525) and item.PLACED:
+           sword_instance.PLACED = False
+           if item in GAME_ITEMS:
+                player_instance.WEAPON = item
+        if player_instance.rect.left in range(225,275) and player_instance.rect.top in range(225,275) and item.PLACED:
+           shield_instance.PLACED = False
+           if item in GAME_ITEMS:
+                player_instance.WEAPON = item
+        if player_instance.rect.left in range(375,425) and player_instance.rect.top in range(375,425) and item.PLACED:
+           bow_instance.PLACED = False
+           if item in GAME_ITEMS:
+                player_instance.WEAPON = item
 
+    #Ganon plus Ganon-Lebensleiste anzeigen
+    if LEVEL == 2:
+        ganon_healthbar_text = HEALTHFONT.render('GANON HEALTH:', RED, BLACK)
+        DISPLAYSURFACE.blit(ganon_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(HEALTHFONT.render(str(ganon.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(ganon.Ganon, (850, MAPHEIGHT * TILESIZE - 400))
 
 
     player_instance.draw()
