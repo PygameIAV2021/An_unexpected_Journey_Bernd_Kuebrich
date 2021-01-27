@@ -6,6 +6,7 @@ wieviel Arbeit eigentlich dahinter steckt.
 Und ich habe festgestellt, der Aufwand ist rießig.
 
 # Das Spiel
+Zuerst landet man in einem kleinen Menü in dem man das Spiel starten kann.
 Die Hauptfigur hat die Aufgabe, in der Spielwelt verteilte Items zu finden und aufzusammeln und damit den fießen Gegner Ganon zu besiegen.
 Die Spielwelt besteht aus 3 verbundenen Levels. Der Hintergrund besteht aus Boden, Grass, Wasser, Bäumen und Wänden.
 Begehbar sind nur Boden und Grass. Die Spielfigur beginnt ganz links, und am rechten Ende wartet Ganon auf die Spielfigur.
