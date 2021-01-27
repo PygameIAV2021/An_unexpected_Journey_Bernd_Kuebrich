@@ -30,7 +30,7 @@ class Player:
                 moveX, moveY = (0, -1*self.speed)
         elif direction == "right":
             self.look = "right"
-            if self.rect.left < (MAPWIDTH * TILESIZE) - TILESIZE:  # if Bedingung damit die figur nicht über den rechten rand hinausgeht
+            if self.rect.left< (MAPWIDTH * TILESIZE) - TILESIZE:  # if Bedingung damit die figur nicht über den rechten rand hinausgeht
                 moveX, moveY = (self.speed, 0)
         elif direction == "left":
             self.look = "left"
@@ -79,4 +79,12 @@ class Sword():
         self.IMAGE = pygame.image.load('sprites/sword.png')
         self.IMAGE_ARMED = pygame.transform.scale(self.IMAGE, (35, 35))
         self.POS = [500, 500]
+        self.PLACED = True
+
+
+class Shield():
+    def __init__(self):
+        self.NAME = 'SHIELD'
+        self.IMAGE = pygame.image.load('./sprites/shield.png')
+        self.POS = [250, 250]
         self.PLACED = True
