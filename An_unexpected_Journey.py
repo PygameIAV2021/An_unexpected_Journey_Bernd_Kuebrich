@@ -8,11 +8,15 @@ Created on Fri Oct 30 07:32:48 2020
 #Imports
 from classes import pygame, Player, Sword, Shield, Ganon, Bow
 from map import levelHolder, Map, DISPLAYSURFACE, MAPHEIGHT, TILESIZE
+from game import Game
+import sys
+from os import path
+from pygame.locals import *
+
 
 pygame.init()
+pygame.mixer.init()
 clock = pygame.time.Clock()
-
-
 
 #COLORS
 WHITE = (200, 200, 200)
@@ -32,6 +36,8 @@ HEALTHFONT = pygame.font.SysFont('FreeSansBold.ttf', 40)
 
 #Variablen
 currentMap = Map(levelHolder[LEVEL].map) # type: Map
+music = path.join(path.dirname(__file__), 'Music')
+
 
 #Instanzen erzeugen
 player_instance = Player("Link", levelHolder[LEVEL].startPosition, "down", currentMap)
@@ -39,9 +45,26 @@ sword_instance = Sword()
 shield_instance = Shield()
 ganon = Ganon()
 bow_instance = Bow()
+menu = Game()
+menu.running = True
+
+#Musik
+pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(loops = -1)
 
 #Benötigte Listen
 GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
+
+#Menü Loop
+while menu.running:
+
+    menu.curr_menu.display_menu()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit();
+            sys.exit()
+    menu.running = False
 
 #main loop
 while GAME_RUNNING:
@@ -82,14 +105,6 @@ while GAME_RUNNING:
         player_instance.changeLevel(levelHolder[LEVEL].previousPosition, currentMap)
     currentMap.draw()
 
-    #Level/Map Wechsel Rechtecke anzeigen
-    # if levelHolder[level].nextLevelRect is not None:
-    #     for rect in levelHolder[level].nextLevelRect: #type: pygame.Rect
-    #         pygame.draw.rect(DISPLAYSURFACE, (255, 0, 0), rect)
-    # if levelHolder[level].previousLevelRect is not None:
-    #     for rect in levelHolder[level].previousLevelRect:  # type: pygame.Rect
-    #         pygame.draw.rect(DISPLAYSURFACE, (0, 0, 255), rect)
-
     #Spieler-Lebensleiste anzeigen
     player_health_bar_text = HEALTHFONT.render('LINK HEALTH:', True, GREEN, BLACK)
     DISPLAYSURFACE.blit(player_health_bar_text, (15, MAPHEIGHT * TILESIZE - 700))
@@ -115,6 +130,8 @@ while GAME_RUNNING:
            if item in GAME_ITEMS:
                 player_instance.WEAPON = item
 
+
+
     #Ganon plus Ganon-Lebensleiste anzeigen
     if LEVEL == 2:
         ganon_healthbar_text = HEALTHFONT.render('GANON HEALTH:', RED, BLACK)
@@ -124,6 +141,7 @@ while GAME_RUNNING:
 
 
     player_instance.draw()
+
     #Screen aktualisieren
     pygame.display.update()
     clock.tick(FPS)
