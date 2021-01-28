@@ -13,7 +13,6 @@ import sys
 from os import path
 from pygame.locals import *
 
-
 pygame.init()
 pygame.mixer.init()
 clock = pygame.time.Clock()
@@ -24,9 +23,6 @@ BLACK = (0, 0, 0)
 BLUE = (30, 144, 255)
 GREEN = (60, 179, 113)
 RED = (178, 0, 0)
-
-#Name im Screenhead
-pygame.display.set_caption("An unexpected Journey")
 
 #Konstanten
 FPS = 20
@@ -48,13 +44,23 @@ bow_instance = Bow()
 menu = Game()
 menu.running = True
 
-#Musik
-pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
-pygame.mixer.music.set_volume(0.4)
-pygame.mixer.music.play(loops = -1)
+#Name im Screenhead
+pygame.display.set_caption("An unexpected Journey")
 
-#Benötigte Listen
+#Musik
+#pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
+#pygame.mixer.music.set_volume(0.4)
+#pygame.mixer.music.play(loops = -1)
+
+#Aufsammelbare Items
 GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
+
+#Funktionen
+def pickupitems(item_instance, x, y):
+    for item in GAME_ITEMS:
+        if player_instance.rect.left in range(x, y) and player_instance.rect.top in range(x, y) and item.placed:
+            item_instance.placed = False
+    return
 
 #Menü Loop
 while menu.running:
@@ -112,25 +118,15 @@ while GAME_RUNNING:
 
     #Items anzeigen
     for item in GAME_ITEMS:
-        if item.PLACED == True and LEVEL == 0:
-            DISPLAYSURFACE.blit(item.IMAGE, (item.POS[0], item.POS[1]))
+        if item.placed == True and LEVEL == 0:
+            DISPLAYSURFACE.blit(item.image, (item.pos[0], item.pos[1]))
+        else:
+            DISPLAYSURFACE.blit(pygame.transform.scale(item.image, (40, 40)), (item.inventory_pos[0], item.inventory_pos[1]))
 
-    #Items aufheben
-    for item in GAME_ITEMS:
-        if player_instance.rect.left in range(475,525) and player_instance.rect.top in range(475,525) and item.PLACED:
-           sword_instance.PLACED = False
-           if item in GAME_ITEMS:
-                player_instance.WEAPON = item
-        if player_instance.rect.left in range(225,275) and player_instance.rect.top in range(225,275) and item.PLACED:
-           shield_instance.PLACED = False
-           if item in GAME_ITEMS:
-                player_instance.WEAPON = item
-        if player_instance.rect.left in range(375,425) and player_instance.rect.top in range(375,425) and item.PLACED:
-           bow_instance.PLACED = False
-           if item in GAME_ITEMS:
-                player_instance.WEAPON = item
-
-
+    # Items aufheben
+    pickupitems(sword_instance, 475, 525)
+    pickupitems(shield_instance, 225,275)
+    pickupitems(bow_instance, 375, 425)
 
     #Ganon plus Ganon-Lebensleiste anzeigen
     if LEVEL == 2:
@@ -138,7 +134,6 @@ while GAME_RUNNING:
         DISPLAYSURFACE.blit(ganon_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(HEALTHFONT.render(str(ganon.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(ganon.Ganon, (850, MAPHEIGHT * TILESIZE - 400))
-
 
     player_instance.draw()
 
