@@ -37,7 +37,7 @@ MAP1= [
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.WALL, Tiles.WALL, Tiles.WALL],
-   [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT],
+   [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.DIRT, Tiles.TREE2, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.DIRT, Tiles.WALL, Tiles.WALL, Tiles.WALL],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
@@ -82,8 +82,7 @@ MAP3= [
    [Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER],
 ]
 
-
-
+#Startpositionen der Spielerfigur pro Level und Recterstellung zum Levelwechsel
 MAP1_start = [50, 300]
 MAP1_oldPosition = [18 * TILESIZE, 6 * TILESIZE]
 MAP1_nextLevelRects = [
@@ -111,10 +110,11 @@ MAP3_previousLevelRect = [
     pygame.Rect(0 * TILESIZE, 7 * TILESIZE, TILESIZE, TILESIZE)
 ]
 
+#Berechnung der Anzahl der Mapkacheln
 MAPWIDTH = len(MAP1[0])
 MAPHEIGHT = len(MAP1)
 
-#MAP ANZEIGE
+#Konstante zur Bildschirmanzeige
 DISPLAYSURFACE = pygame.display.set_mode((MAPWIDTH*TILESIZE, MAPHEIGHT*TILESIZE))
 
 
