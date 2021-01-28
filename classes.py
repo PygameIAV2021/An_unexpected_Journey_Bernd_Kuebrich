@@ -75,18 +75,28 @@ class Player():
 
 class Sword():
     def __init__(self):
-        self.NAME = 'Sword'
-        self.IMAGE = pygame.image.load('sprites/sword.png')
-        self.POS = [500, 500]
-        self.PLACED = True
+        self.name = 'Sword'
+        self.image = pygame.image.load('sprites/sword.png')
+        self.pos = [500, 500]
+        self.placed = True
+        self.inventory_pos = [400, 0]
 
 
 class Shield():
     def __init__(self):
-        self.NAME = 'SHIELD'
-        self.IMAGE = pygame.image.load('./sprites/shield.png')
-        self.POS = [250, 250]
-        self.PLACED = True
+        self.name= 'SHIELD'
+        self.image = pygame.image.load('./sprites/shield.png')
+        self.pos = [250, 250]
+        self.placed = True
+        self.inventory_pos = [300, 0]
+
+class Bow():
+    def __init__(self):
+        self.name = 'BOW'
+        self.image = pygame.transform.scale(pygame.image.load('./sprites/bow.png'), (50, 50))
+        self.pos = [400, 400]
+        self.placed = True
+        self.inventory_pos = [350,0]
 
 class Ganon():
     def __init__(self, Ganon_pos = [300, 800]):
@@ -95,9 +105,5 @@ class Ganon():
         self.Health = 250
         self.rect = pygame.Rect(Ganon_pos[0], Ganon_pos[1], 100, 100)
 
-class Bow():
-    def __init__(self):
-        self.NAME = 'BOW'
-        self.IMAGE = pygame.transform.scale(pygame.image.load('./sprites/bow.png'), (50, 50))
-        self.POS = [400, 400]
-        self.PLACED = True
+
+
