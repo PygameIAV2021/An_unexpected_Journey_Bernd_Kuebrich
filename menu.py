@@ -38,6 +38,7 @@ class MainMenu(Menu):
 
 
     def move_cursor(self):
+        return
         if self.game.DOWN_KEY:
             if self.state == 'Start':
                 self.cursor_rect.midtop = (self.optionsx + self.offset, self.optionsy)
