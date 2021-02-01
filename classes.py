@@ -2,7 +2,7 @@ import pygame
 from map import Map, TILESIZE, MAPHEIGHT, MAPWIDTH, DISPLAYSURFACE, Tiles
 
 class Player():
-    def __init__(self, name, pos, look, map: Map, speed=10, spritecounter=0, health=100, inventory = [], spritecounter_wolf_top_down = 0, spritecounter_wolf_left_right = 0):
+    def __init__(self, name, pos, look, map: Map, speed=9, spritecounter=0, health=100, inventory = [], spritecounter_wolf_top_down = 0, spritecounter_wolf_left_right = 0):
         self.name = name
         self.map = map
         self.speed = speed
@@ -13,8 +13,8 @@ class Player():
         self.spritecounter_wolf_left_right = spritecounter_wolf_left_right
         self.link_go_up = [pygame.image.load("sprites/link/link_b0.png"), pygame.image.load("sprites/link/link_b1.png"), pygame.image.load("sprites/link/link_b2.png"), pygame.image.load("sprites/link/link_b3.png"), pygame.image.load("sprites/link/link_b4.png"), pygame.image.load("sprites/link/link_b5.png"), pygame.image.load("sprites/link/link_b6.png"), pygame.image.load("sprites/link/link_b7.png")]
         self.link_go_down = [pygame.image.load("sprites/link/link_f0.png"), pygame.image.load("sprites/link/link_f1.png"), pygame.image.load("sprites/link/link_f2.png"), pygame.image.load("sprites/link/link_f3.png"), pygame.image.load("sprites/link/link_f4.png"), pygame.image.load("sprites/link/link_f5.png"), pygame.image.load("sprites/link/link_f6.png"), pygame.image.load("sprites/link/link_f4.png")]
-        self.link_go_left = [pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l2.png"), pygame.image.load("sprites/link/link_l1.png"), pygame.image.load("sprites/link/link_l0.png"),  pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l4.png"), pygame.image.load("sprites/link/link_l5.png"), pygame.image.load("sprites/link/link_l6.png")]
-        self.link_go_right = [pygame.image.load("sprites/link/link_r0.png"), pygame.image.load("sprites/link/link_r1.png"), pygame.image.load("sprites/link/link_r2.png"), pygame.image.load("sprites/link/link_r3.png"), pygame.image.load("sprites/link/link_r4.png"), pygame.image.load("sprites/link/link_r5.png"), pygame.image.load("sprites/link/link_r6.png"), pygame.image.load("sprites/link/link_r7.png")]
+        self.link_go_left = [pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l2.png"), pygame.image.load("sprites/link/link_l1.png"), pygame.image.load("sprites/link/link_l0.png"),  pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l4.png"), pygame.image.load("sprites/link/link_l5.png"), pygame.image.load("sprites/link/link_l6.png"), pygame.transform.scale(pygame.image.load("sprites/link.png"), (60,60,))]
+        self.link_go_right = [pygame.image.load("sprites/link/link_r0.png"), pygame.image.load("sprites/link/link_r1.png"), pygame.image.load("sprites/link/link_r2.png"), pygame.image.load("sprites/link/link_r3.png"), pygame.image.load("sprites/link/link_r4.png"), pygame.image.load("sprites/link/link_r5.png"), pygame.image.load("sprites/link/link_r6.png"), pygame.image.load("sprites/link/link_r7.png"), pygame.transform.flip(pygame.transform.scale(pygame.image.load("sprites/link.png"), (60,60)), True, False)]
         self.health = health
         self.inventory = inventory
         self.wolf_go_up = [pygame.image.load("sprites/wolf/wolf_b0.png"), pygame.image.load("sprites/wolf/wolf_b1.png"), pygame.image.load("sprites/wolf/wolf_b2.png"), pygame.image.load("sprites/wolf/wolf_b3.png"), pygame.image.load("sprites/wolf/wolf_b4.png"), pygame.image.load("sprites/wolf/wolf_b5.png"), pygame.image.load("sprites/wolf/wolf_b6.png")]
@@ -22,6 +22,7 @@ class Player():
         self.wolf_go_left = [pygame.image.load("sprites/wolf/wolf_l0.png"), pygame.image.load("sprites/wolf/wolf_l1.png"), pygame.image.load("sprites/wolf/wolf_l2.png"), pygame.image.load("sprites/wolf/wolf_l3.png")]
         self.wolf_go_right = [pygame.image.load("sprites/wolf/wolf_r0.png"), pygame.image.load("sprites/wolf/wolf_r1.png"), pygame.image.load("sprites/wolf/wolf_r2.png"), pygame.image.load("sprites/wolf/wolf_r3.png")]
         self.transform = False
+        self.link_fight = pygame.image.load("sprites/link.png")
 
 
     def tryToMove(self, direction):
@@ -34,7 +35,7 @@ class Player():
                 moveX, moveY = (0, self.speed)
         elif direction == "up":
             self.look = "up"
-            if self.rect.top >= self.speed:
+            if self.rect.top >= self.speed: #if Bedingung damit die Figur nicht über den oberen rand hinausgeht
                 moveX, moveY = (0, -1*self.speed)
         elif direction == "right":
             self.look = "right"
@@ -65,7 +66,7 @@ class Player():
                 self.spritecounter = 0
         else:
             self.spritecounter_wolf_top_down += 1
-            self.spritecounter_wolf_left_right+= 1
+            self.spritecounter_wolf_left_right += 1
             if self.spritecounter_wolf_top_down > 6:
                 self.spritecounter_wolf_top_down = 0
             if self.spritecounter_wolf_left_right > 3:
@@ -111,11 +112,10 @@ class Sword():
         self.inventory_pos = [400, 0]
         self.picked_up = False
 
-
 class Shield():
     def __init__(self):
         self.name= 'SHIELD'
-        self.image = pygame.image.load('./sprites/shield.png')
+        self.image = pygame.image.load('sprites/shield.png')
         self.pos = [250, 250]
         self.placed = True
         self.inventory_pos = [300, 0]
@@ -124,7 +124,7 @@ class Shield():
 class Bow():
     def __init__(self):
         self.name = 'BOW'
-        self.image = pygame.transform.scale(pygame.image.load('./sprites/bow.png'), (50, 50))
+        self.image = pygame.transform.scale(pygame.image.load('sprites/bow.png'), (TILESIZE, TILESIZE))
         self.pos = [400, 400]
         self.placed = True
         self.inventory_pos = [350,0]
@@ -132,9 +132,14 @@ class Bow():
 
 class Ganon():
     def __init__(self, Ganon_pos = [800, 300]):
-        self.Ganon = pygame.image.load('./sprites/ganon.png')
+        self.Ganon = pygame.image.load('sprites/ganon.png')
         self.Health = 250
         self.rect = pygame.Rect(Ganon_pos[0], Ganon_pos[1], 100, 100)
 
-
+class Beast():
+    def __init__(self, Beast_pos = []):
+        self.Beast = pygame.transform.scale(pygame.image.load('sprites/beast.png'), (TILESIZE, TILESIZE))
+        self.Beast_pos = Beast_pos
+        self.Health = 100
+        self.rect = pygame.Rect(Beast_pos[0], Beast_pos[1], 50, 50)
 

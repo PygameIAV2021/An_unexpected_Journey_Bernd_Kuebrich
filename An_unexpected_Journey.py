@@ -6,7 +6,7 @@ Created on Fri Oct 30 07:32:48 2020
 """
 
 #Imports
-from classes import pygame, Player, Sword, Shield, Ganon, Bow
+from classes import pygame, Player, Sword, Shield, Ganon, Bow, Beast
 from map import levelHolder, Map, DISPLAYSURFACE, MAPHEIGHT, TILESIZE
 from game import Game
 import sys
@@ -25,7 +25,7 @@ GREEN = (60, 179, 113)
 RED = (178, 0, 0)
 
 #Konstanten
-FPS = 16
+FPS = 15
 GAME_RUNNING = True
 LEVEL = 0
 HEALTHFONT = pygame.font.SysFont('FreeSansBold.ttf', 40)
@@ -41,6 +41,7 @@ sword_instance = Sword()
 shield_instance = Shield()
 ganon_instance = Ganon()
 bow_instance = Bow()
+beast_instance = Beast([500, 200])
 menu = Game()
 menu.running = True
 
@@ -58,7 +59,7 @@ GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
 #Funktionen
 def pickupitems(item_instance, x, y):
     for item in GAME_ITEMS:
-        if player_instance.rect.left in range(x, y) and player_instance.rect.top in range(x, y) and item.placed:
+        if player_instance.rect.left in range(x, y) and player_instance.rect.top in range(x, y) and item.placed and LEVEL is 0:
             item_instance.placed = False
             item_instance.picked_up = True
     return
@@ -69,13 +70,12 @@ while menu.running:
     menu.curr_menu.display_menu()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit();
+            pygame.quit()
             sys.exit()
     menu.running = False
 
 #main loop
 while GAME_RUNNING:
-
 
     #Überprüfen, ob Nutzer eine Aktion durchgeführt hat
     for event in pygame.event.get():
@@ -87,24 +87,52 @@ while GAME_RUNNING:
 
     #Bewegung nach Oben
     if buffer[pygame.K_UP]:
-        move = player_instance.tryToMove("up")
+        if player_instance.rect.colliderect(beast_instance.rect):
+            player_instance.rect.move_ip(0, 1 * player_instance.speed)
+        else:
+            player_instance.tryToMove("up")
 
     #Bewegung nach Unten
     elif buffer[pygame.K_DOWN]:
-        player_instance.tryToMove("down")
+        if player_instance.rect.colliderect(beast_instance.rect):
+            player_instance.rect.move_ip(0, -1 * player_instance.speed)
+        else:
+            player_instance.tryToMove("down")
 
     #Bewegung nach Rechts
     elif buffer[pygame.K_RIGHT]:
-        player_instance.tryToMove("right")
+        if player_instance.rect.colliderect(beast_instance.rect):
+            player_instance.rect.move_ip(-1 * player_instance.speed, 0)
+        else:
+            player_instance.tryToMove("right")
 
     #Bewegung nach Links
     elif buffer[pygame.K_LEFT]:
-        player_instance.tryToMove("left")
+        if player_instance.rect.colliderect(beast_instance.rect):
+            player_instance.rect.move_ip(1 * player_instance.speed, 0)
+        else:
+            player_instance.tryToMove("left")
 
+    #Schwertattacke
+    elif buffer[pygame.K_SPACE]:
+        if player_instance.look is "right" and sword_instance.picked_up is True and shield_instance.picked_up is True:
+            player_instance.spritecounter = 8
+            if player_instance.rect.colliderect(beast_instance.rect):
+                beast_instance.Health -= 25
+            elif player_instance.rect.colliderect(ganon_instance.rect):
+                ganon_instance.Health -= 25
+
+        elif player_instance.look is "left" and sword_instance.picked_up is True and shield_instance.picked_up is True:
+            player_instance.spritecounter = 8
+            if player_instance.rect.colliderect(beast_instance.rect):
+                beast_instance.Health -= 25
+            elif player_instance.rect.colliderect(ganon_instance.rect):
+                ganon_instance.Health -= 25
+    # Damit das richtige Spielerbild beim Stehen angezeigt wird
     else:
-        player_instance.spritecounter = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
-        player_instance.spritecounter_wolf_top_down = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
-        player_instance.spritecounter_wolf_left_right = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
+        player_instance.spritecounter = 0
+        player_instance.spritecounter_wolf_top_down = 0
+        player_instance.spritecounter_wolf_left_right = 0
 
     # Verwandlung in Wolf
     if buffer[pygame.K_LCTRL]:
@@ -149,6 +177,14 @@ while GAME_RUNNING:
         DISPLAYSURFACE.blit(ganon_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(HEALTHFONT.render(str(ganon_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(ganon_instance.Ganon, (ganon_instance.rect.x, ganon_instance.rect.y))
+
+    #Beast plus Beast-Lebensleiste anzeigen
+    if LEVEL == 1:
+        beast_healthbar_text = HEALTHFONT.render('BEAST HEALTH:', RED, BLACK)
+        DISPLAYSURFACE.blit(beast_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(HEALTHFONT.render(str(beast_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(beast_instance.Beast, (beast_instance.rect.x, beast_instance.rect.y))
+
 
     player_instance.draw()
 
