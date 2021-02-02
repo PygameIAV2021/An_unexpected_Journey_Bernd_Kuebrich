@@ -39,9 +39,9 @@ music = path.join(path.dirname(__file__), 'Music')
 player_instance = Player("Link", levelHolder[LEVEL].startPosition, "down", currentMap)
 sword_instance = Sword()
 shield_instance = Shield()
-ganon_instance = Ganon()
+ganon_instance = Ganon(2)
 bow_instance = Bow()
-beast_instance = Beast([500, 200])
+beast_instance = Beast(1, [500, 200])
 menu = Game()
 menu.running = True
 
@@ -87,31 +87,19 @@ while GAME_RUNNING:
 
     #Bewegung nach Oben
     if buffer[pygame.K_UP]:
-        if player_instance.rect.colliderect(beast_instance.rect):
-            player_instance.rect.move_ip(0, 1 * player_instance.speed)
-        else:
-            player_instance.tryToMove("up")
+        player_instance.tryToMove("up", LEVEL, beast_instance, ganon_instance)
 
     #Bewegung nach Unten
     elif buffer[pygame.K_DOWN]:
-        if player_instance.rect.colliderect(beast_instance.rect):
-            player_instance.rect.move_ip(0, -1 * player_instance.speed)
-        else:
-            player_instance.tryToMove("down")
+        player_instance.tryToMove("down", LEVEL, beast_instance, ganon_instance)
 
     #Bewegung nach Rechts
     elif buffer[pygame.K_RIGHT]:
-        if player_instance.rect.colliderect(beast_instance.rect):
-            player_instance.rect.move_ip(-1 * player_instance.speed, 0)
-        else:
-            player_instance.tryToMove("right")
+        player_instance.tryToMove("right", LEVEL, beast_instance, ganon_instance)
 
     #Bewegung nach Links
     elif buffer[pygame.K_LEFT]:
-        if player_instance.rect.colliderect(beast_instance.rect):
-            player_instance.rect.move_ip(1 * player_instance.speed, 0)
-        else:
-            player_instance.tryToMove("left")
+        player_instance.tryToMove("left", LEVEL, beast_instance, ganon_instance)
 
     #Schwertattacke
     elif buffer[pygame.K_SPACE]:
