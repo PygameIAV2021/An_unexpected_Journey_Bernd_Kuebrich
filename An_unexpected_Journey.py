@@ -17,7 +17,7 @@ pygame.init()
 pygame.mixer.init()
 clock = pygame.time.Clock()
 
-#COLORS
+#Farben
 WHITE = (200, 200, 200)
 BLACK = (0, 0, 0)
 BLUE = (30, 144, 255)
@@ -59,12 +59,12 @@ GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
 #Funktionen
 def pickupitems(item_instance, x, y):
     for item in GAME_ITEMS:
-        if player_instance.rect.left in range(x, y) and player_instance.rect.top in range(x, y) and item.placed and LEVEL is 0:
+        if player_instance.rect.left in range(x, y) and player_instance.rect.top in range(x, y) and item.placed and LEVEL == 0:
             item_instance.placed = False
             item_instance.picked_up = True
     return
 
-#Menü Loop
+#Menüschleife
 while menu.running:
 
     menu.curr_menu.display_menu()
@@ -74,7 +74,7 @@ while menu.running:
             sys.exit()
     menu.running = False
 
-#main loop
+#Hauptschleife
 while GAME_RUNNING:
 
     #Überprüfen, ob Nutzer eine Aktion durchgeführt hat
@@ -115,30 +115,30 @@ while GAME_RUNNING:
 
     #Schwertattacke
     elif buffer[pygame.K_SPACE]:
-        if player_instance.look is "right" and sword_instance.picked_up is True and shield_instance.picked_up is True:
+        if player_instance.look == "right" and sword_instance.picked_up and shield_instance.picked_up:
             player_instance.spritecounter = 8
             if player_instance.rect.colliderect(beast_instance.rect):
                 beast_instance.Health -= 25
             elif player_instance.rect.colliderect(ganon_instance.rect):
                 ganon_instance.Health -= 25
 
-        elif player_instance.look is "left" and sword_instance.picked_up is True and shield_instance.picked_up is True:
+        elif player_instance.look == "left" and sword_instance.picked_up and shield_instance.picked_up:
             player_instance.spritecounter = 8
             if player_instance.rect.colliderect(beast_instance.rect):
                 beast_instance.Health -= 25
             elif player_instance.rect.colliderect(ganon_instance.rect):
                 ganon_instance.Health -= 25
-    # Damit das richtige Spielerbild beim Stehen angezeigt wird
+    #Damit das richtige Spielerbild beim Stehen angezeigt wird
     else:
         player_instance.spritecounter = 0
         player_instance.spritecounter_wolf_top_down = 0
         player_instance.spritecounter_wolf_left_right = 0
 
-    # Verwandlung in Wolf
+    #Verwandlung in Wolf
     if buffer[pygame.K_LCTRL]:
         player_instance.transform = True
 
-    # Zurückverwandlung von Wolf
+    #Zurückverwandlung von Wolf
     elif buffer[pygame.K_LSHIFT]:
         player_instance.transform = False
 
@@ -161,9 +161,9 @@ while GAME_RUNNING:
 
     #Items anzeigen
     for item in GAME_ITEMS:
-        if item.placed is True and LEVEL is 0:
+        if item.placed and LEVEL == 0:
             DISPLAYSURFACE.blit(item.image, (item.pos[0], item.pos[1]))
-        elif item.placed is False and item.picked_up is True:
+        elif item.placed is False and item.picked_up:
             DISPLAYSURFACE.blit(pygame.transform.scale(item.image, (40, 40)), (item.inventory_pos[0], item.inventory_pos[1]))
 
     # Items aufheben
@@ -184,7 +184,6 @@ while GAME_RUNNING:
         DISPLAYSURFACE.blit(beast_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(HEALTHFONT.render(str(beast_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(beast_instance.Beast, (beast_instance.rect.x, beast_instance.rect.y))
-
 
     player_instance.draw()
 
