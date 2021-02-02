@@ -105,17 +105,30 @@ while GAME_RUNNING:
     elif buffer[pygame.K_SPACE]:
         if player_instance.look == "right" and sword_instance.picked_up and shield_instance.picked_up:
             player_instance.spritecounter = 8
-            if player_instance.rect.colliderect(beast_instance.rect):
-                beast_instance.Health -= 25
-            elif player_instance.rect.colliderect(ganon_instance.rect):
+            hitBox = player_instance.rect.copy()
+            hitBox.move_ip(50, 0)
+            if hitBox.colliderect(beast_instance.rect):
+                beast_instance.Health -= 100
+                beast_instance.alive = False
+                beast_instance.rect = pygame.Rect(1500, 1500, TILESIZE, TILESIZE)
+            elif hitBox.colliderect(ganon_instance.rect):
                 ganon_instance.Health -= 25
+                if ganon_instance.Health == 0:
+                    ganon_instance.alive = False
 
         elif player_instance.look == "left" and sword_instance.picked_up and shield_instance.picked_up:
             player_instance.spritecounter = 8
-            if player_instance.rect.colliderect(beast_instance.rect):
-                beast_instance.Health -= 25
-            elif player_instance.rect.colliderect(ganon_instance.rect):
+            hitBox = player_instance.rect.copy()
+            hitBox.move_ip(50, 0)
+            if hitBox.colliderect(beast_instance.rect):
+                beast_instance.Health -= 100
+                beast_instance.alive = False
+                beast_instance.rect = pygame.Rect(1500, 1500, TILESIZE, TILESIZE)
+            elif hitBox.colliderect(ganon_instance.rect):
                 ganon_instance.Health -= 25
+                if ganon_instance.Health == 0:
+                    ganon_instance.alive = False
+
     #Damit das richtige Spielerbild beim Stehen angezeigt wird
     else:
         player_instance.spritecounter = 0
@@ -160,18 +173,20 @@ while GAME_RUNNING:
     pickupitems(bow_instance, 375, 425)
 
     #Ganon plus Ganon-Lebensleiste anzeigen
-    if LEVEL == 2:
+    if LEVEL == 2 and ganon_instance.alive:
         ganon_healthbar_text = HEALTHFONT.render('GANON HEALTH:', RED, BLACK)
         DISPLAYSURFACE.blit(ganon_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(HEALTHFONT.render(str(ganon_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(ganon_instance.Ganon, (ganon_instance.rect.x, ganon_instance.rect.y))
 
     #Beast plus Beast-Lebensleiste anzeigen
-    if LEVEL == 1:
+    if LEVEL == 1 and beast_instance.alive:
         beast_healthbar_text = HEALTHFONT.render('BEAST HEALTH:', RED, BLACK)
         DISPLAYSURFACE.blit(beast_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(HEALTHFONT.render(str(beast_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(beast_instance.Beast, (beast_instance.rect.x, beast_instance.rect.y))
+        beast_instance.move()
+
 
     player_instance.draw()
 
