@@ -12,10 +12,13 @@ Die Spielwelt besteht aus 3 verbundenen Levels. Der Hintergrund besteht aus Bode
 Begehbar sind nur Boden und Grass. Die Spielfigur beginnt ganz links, und am rechten Ende wartet Ganon auf die Spielfigur.
 
 # Steuerung
-Pfeiltaste links bewegt die Spielfigur nach links
-Pfeiltaste rechts bewegt die Spielfigur nach rechts
-Pfeiltaste oben beweget die Spielfigur nach oben
-Pfeilstaste unten bewegt die Spielfigur nach unten
+Pfeiltaste links bewegt die Spielfigur nach links  
+Pfeiltaste rechts bewegt die Spielfigur nach rechts  
+Pfeiltaste oben beweget die Spielfigur nach oben  
+Pfeilstaste unten bewegt die Spielfigur nach unten  
+STRG links verwandelt die Spielfigur in einen Wolf
+Shift links verwandelt die Spielfigur zurück
+Leertaste führt einen Schwerthieb aus (Falls das Schwert und Schild aufgehoben wurden)
 
 # Eingebunden Bibliotheken
 _pygame_ Hauptbibliothek zur Erstellung des Spiels
