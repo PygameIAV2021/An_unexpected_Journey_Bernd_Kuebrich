@@ -41,7 +41,7 @@ Beast: Erstellt den Gegner Beast in Level 2
 
 Level: Zuständig für den Levelwechsel  
 
-Spielkachel: Zeichnet die unsichtbaren Rechtecke der Map für die Kollisionskontrolle des Wassers und der Wände  
+Spielkachel: Erstellt die unsichtbaren Rechtecke der Map für die Kollisionskontrolle des Wassers und der Wände  
 
 Map: Zeichnet die Levels und enthält Methoden zur Erstellung einer Liste der Levelrechtecke  
 
