@@ -1,6 +1,7 @@
 import pygame
 from map import TILESIZE
 
+#Klasse für Ganon
 class Ganon():
     def __init__(self, level, Ganon_pos = [800, 300]):
         self.Ganon = pygame.image.load('sprites/ganon.png')
@@ -9,6 +10,7 @@ class Ganon():
         self.level = level
         self.alive = True
 
+#Klasse für Beast
 class Beast():
     def __init__(self, level, Beast_pos = []):
         self.Beast = pygame.transform.scale(pygame.image.load('sprites/beast.png'), (TILESIZE, TILESIZE))
@@ -23,6 +25,7 @@ class Beast():
         self.alive = True
         self.direction = "Left"
 
+    #Methode für Beastbewegung
     def move(self):
         self.rect.move_ip(self.move_x, self.move_y)
         self.moveCounter += 1
