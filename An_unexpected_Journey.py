@@ -167,19 +167,19 @@ while GAME_RUNNING:
         elif item.placed is False and item.picked_up:
             DISPLAYSURFACE.blit(pygame.transform.scale(item.image, (40, 40)), (item.inventory_pos[0], item.inventory_pos[1]))
 
-    # Items aufheben
+    #Items aufheben
     pickupitems(sword_instance, 475, 525)
     pickupitems(shield_instance, 225,275)
     pickupitems(bow_instance, 375, 425)
 
-    #Ganon plus Ganon-Lebensleiste anzeigen
+    #Ganon plus Ganon-Lebensleiste anzeigen plus Ganon-rect eErstellung
     if LEVEL == 2 and ganon_instance.alive:
         ganon_healthbar_text = HEALTHFONT.render('GANON HEALTH:', RED, BLACK)
         DISPLAYSURFACE.blit(ganon_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(HEALTHFONT.render(str(ganon_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
         DISPLAYSURFACE.blit(ganon_instance.Ganon, (ganon_instance.rect.x, ganon_instance.rect.y))
 
-    #Beast plus Beast-Lebensleiste anzeigen
+    #Beast plus Beast-Lebensleiste anzeigen plus Beast-rect Erstellung plus Beast-bewegung
     if LEVEL == 1 and beast_instance.alive:
         beast_healthbar_text = HEALTHFONT.render('BEAST HEALTH:', RED, BLACK)
         DISPLAYSURFACE.blit(beast_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
@@ -187,7 +187,7 @@ while GAME_RUNNING:
         DISPLAYSURFACE.blit(beast_instance.Beast, (beast_instance.rect.x, beast_instance.rect.y))
         beast_instance.move()
 
-
+    #Methode Spielfigur zeichnen
     player_instance.draw()
 
     #Screen aktualisieren

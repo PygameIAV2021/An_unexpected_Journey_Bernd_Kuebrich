@@ -7,7 +7,7 @@ Created on Fri Nov 27 08:29:35 2020
 import pygame
 import enum
 
-# TILES
+#Kacheln
 class Tiles(enum.Enum):
     DIRT = 0
     GRASS = 1
@@ -16,10 +16,10 @@ class Tiles(enum.Enum):
     TREE1 = 4
     TREE2 = 5
 
-#Game dimensions
+#Kachelgröße und Spritegröße
 TILESIZE = 50
 
-#Dictionary linking tiles
+#Dictionary Kachelzuordnung
 TEXTURES = {
     Tiles.DIRT: pygame.transform.scale(pygame.image.load('Level/ground.png'), (TILESIZE, TILESIZE)),
     Tiles.GRASS: pygame.transform.scale(pygame.image.load('Level/grass.png'), (TILESIZE, TILESIZE)),
@@ -29,7 +29,7 @@ TEXTURES = {
     Tiles.TREE2: pygame.transform.scale(pygame.image.load('Level/trees/tree_1.png'),(TILESIZE, TILESIZE))
 }
 
-#Tiles to be displayed
+#Anordnung der Kacheln auf der Map/Level
 MAP1= [
    [Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
@@ -46,8 +46,7 @@ MAP1= [
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
    [Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER],
 ]
-
-
+#Anordnung der Kacheln auf der Map/Level
 MAP2= [
    [Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
@@ -64,7 +63,7 @@ MAP2= [
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
    [Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER],
 ]
-
+#Anordnung der Kacheln auf der Map/Level
 MAP3= [
    [Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER, Tiles.WATER],
    [Tiles.WATER, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.GRASS, Tiles.WATER],
@@ -117,8 +116,7 @@ MAPHEIGHT = len(MAP1)
 #Konstante zur Bildschirmanzeige
 DISPLAYSURFACE = pygame.display.set_mode((MAPWIDTH*TILESIZE, MAPHEIGHT*TILESIZE))
 
-
-
+#Klasse für Map/Levelwechsel
 class Level:
     def __init__(self, map, startPosition, previousPosition, nextLevelRects, previousLevelRects):
         self.map = map
@@ -127,6 +125,7 @@ class Level:
         self.nextLevelRect = nextLevelRects
         self.previousLevelRect = previousLevelRects
 
+    #Methode zum Map/Levelwechsel
     def isOnChangePosition(self, spielfigur):
 
         if self.nextLevelRect is not None:
@@ -140,16 +139,19 @@ class Level:
 
         return False
 
+#Map/Level Konstanten
 l1 = Level(MAP1, MAP1_start, MAP1_oldPosition, MAP1_nextLevelRects, MAP1_previousLevelRect)
 l2 = Level(MAP2, MAP2_start, MAP2_oldPosition, MAP2_nextLevelRects, MAP2_previousLevelRect)
 l3 = Level(MAP3, MAP3_start, MAP3_oldPosition, MAP3_nextLevelRects, MAP3_previousLevelRect)
 levelHolder = [l1, l2, l3]
 
+#Klasse für Spielkachelrects
 class Spielkachel(pygame.Rect):
     def __init__(self, typ, x, y):
         super().__init__(x, y, TILESIZE, TILESIZE)
         self.type = typ
 
+#Klasse für Map
 class Map:
 
     def __init__(self, map):

@@ -2,6 +2,7 @@ import pygame
 from map import Map, TILESIZE, MAPHEIGHT, MAPWIDTH, DISPLAYSURFACE, Tiles
 from enemies import Beast, Ganon
 
+#Spielerklasse
 class Player():
     def __init__(self, name, pos, look, map: Map, speed=9, spritecounter=0, health=100, inventory = [], spritecounter_wolf_top_down = 0, spritecounter_wolf_left_right = 0):
         self.name = name
@@ -25,7 +26,7 @@ class Player():
         self.transform = False
         self.link_fight = pygame.image.load("sprites/link.png")
 
-
+    #Bewegungsmethode
     def tryToMove(self, direction, current_level, beast: Beast, ganon: Ganon):
 
         moveX, moveY = (0, 0)
@@ -56,21 +57,27 @@ class Player():
         #liefert index (aus collisionList) von allen rects mit kollisionen
         result = self.rect.collidelistall(rectList)
 
+        #Kollisionskontrolle mit beast
         if beast.level == current_level and self.rect.colliderect(beast.rect):
             self.rect.move_ip(-1 * moveX, -1 * moveY)
 
+        #Kollisionskontrolle mit Ganon
         if ganon.level == current_level and self.rect.colliderect(ganon.rect):
             self.rect.move_ip(-1 * moveX, -1 * moveY)
 
+        #Kollisionskontrolle mit Landschaft (Wasser, Bäume etc.)
         for index in result:
             if rectList[index].type in [Tiles.WATER, Tiles.WALL, Tiles.TREE1, Tiles.TREE2]:
                 self.rect.move_ip(-1*moveX, -1*moveY)
                 return
 
+        #Spritezähler Spielerfigur
         if self.transform is False:
             self.spritecounter += 1
             if self.spritecounter > 7:
                 self.spritecounter = 0
+
+        #Spritezähler Spielerfigur nach Verwandlung
         else:
             self.spritecounter_wolf_top_down += 1
             self.spritecounter_wolf_left_right += 1
@@ -105,11 +112,13 @@ class Player():
             else:
                 DISPLAYSURFACE.blit(self.link_go_right[self.spritecounter], (self.rect.left, self.rect.top))
 
+    #Rect Erstellung zum Level/Map Wechsel
     def changeLevel(self, position, map):
         self.rect.left = position[0]
         self.rect.top = position[1]
         self.map = map
 
+#Klasse für das Schwert
 class Sword():
     def __init__(self):
         self.name = 'Sword'
@@ -119,6 +128,7 @@ class Sword():
         self.inventory_pos = [400, 0]
         self.picked_up = False
 
+#Klasse für das Schild
 class Shield():
     def __init__(self):
         self.name= 'SHIELD'
@@ -128,6 +138,7 @@ class Shield():
         self.inventory_pos = [300, 0]
         self.picked_up = False
 
+#Klasse für den Bogen
 class Bow():
     def __init__(self):
         self.name = 'BOW'
