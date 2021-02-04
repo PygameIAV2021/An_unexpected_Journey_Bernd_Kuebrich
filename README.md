@@ -3,7 +3,7 @@
 # Warum dieses Spiel?
 Da ich schon über 15 Jahren ein rießiger Fan von Rollenspiel/Adventures der Marke "Zelda" bin dachte ich mir es ist bestimmt interessant heraus zu finden 
 wieviel Arbeit eigentlich dahinter steckt.
-Und ich habe festgestellt, der Aufwand ist rießig.
+Und ich habe festgestellt, der Aufwand ist rießig und eigentlich braucht man auch einen Grafiker.  
 
 # Das Spiel
 Zuerst landet man in einem kleinen Menü in dem man das Spiel starten kann.  
@@ -17,7 +17,7 @@ Pfeiltaste rechts bewegt die Spielfigur nach rechts
 Pfeiltaste oben beweget die Spielfigur nach oben  
 Pfeilstaste unten bewegt die Spielfigur nach unten  
 STRG links verwandelt die Spielfigur in einen Wolf
-Shift links verwandelt die Spielfigur zurück
+Shift links verwandelt die Spielfigur zurück  
 Leertaste führt einen Schwerthieb aus (Falls das Schwert und Schild aufgehoben wurden)
 
 # Eingebunden Bibliotheken
