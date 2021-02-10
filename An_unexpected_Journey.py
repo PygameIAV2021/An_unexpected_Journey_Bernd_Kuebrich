@@ -49,9 +49,9 @@ menu.running = True
 pygame.display.set_caption("An unexpected Journey")
 
 #Musik
-pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
-pygame.mixer.music.set_volume(0.4)
-pygame.mixer.music.play(loops = -1)
+#pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
+#pygame.mixer.music.set_volume(0.4)
+#pygame.mixer.music.play(loops = -1)
 
 #Aufsammelbare Items
 GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
