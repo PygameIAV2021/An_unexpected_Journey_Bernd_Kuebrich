@@ -6,49 +6,76 @@ Created on Fri Oct 30 07:32:48 2020
 """
 
 #Imports
-from map import *                       # Map importieren
-from classes import *                   # Klassen importieren
+from classes import pygame, Player, Sword, Shield, Ganon, Bow, Beast
+from map import levelHolder, Map, DISPLAYSURFACE, MAPHEIGHT, TILESIZE
+from game import Game
+import sys
+from os import path
+from pygame.locals import *
 
-#Inits
 pygame.init()
+pygame.mixer.init()
 clock = pygame.time.Clock()
+
+#Farben
+WHITE = (200, 200, 200)
+BLACK = (0, 0, 0)
+BLUE = (30, 144, 255)
+GREEN = (60, 179, 113)
+RED = (178, 0, 0)
+
+#Konstanten
+FPS = 15
+GAME_RUNNING = True
+LEVEL = 0
+HEALTHFONT = pygame.font.SysFont('FreeSansBold.ttf', 40)
+
+#Variablen
+currentMap = Map(levelHolder[LEVEL].map) # type: Map
+music = path.join(path.dirname(__file__), 'Music')
+
+
+#Instanzen erzeugen
+player_instance = Player("Link", levelHolder[LEVEL].startPosition, "down", currentMap)
+sword_instance = Sword()
+shield_instance = Shield()
+ganon_instance = Ganon(2)
+bow_instance = Bow()
+beast_instance = Beast(1, [500, 200])
+menu = Game()
+menu.running = True
 
 #Name im Screenhead
 pygame.display.set_caption("An unexpected Journey")
 
-#Variablen
-FPS = 15
-GAME_RUNNING = True
+#Musik
+pygame.mixer.music.load(path.join(music, 'mainmusic.mp3'))
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(loops = -1)
 
-#Spielerinstanz erzeugen
-classlink = Spielfiguren("Link", 50,50, "top")
+#Aufsammelbare Items
+GAME_ITEMS = [sword_instance, shield_instance, bow_instance]
 
-#Spielerfigur Sprites
-link_go_up = [pygame.image.load("sprites/link/link_b0.png"), pygame.image.load("sprites/link/link_b1.png"), pygame.image.load("sprites/link/link_b2.png"), pygame.image.load("sprites/link/link_b3.png"), pygame.image.load("sprites/link/link_b4.png"), pygame.image.load("sprites/link/link_b5.png"), pygame.image.load("sprites/link/link_b6.png"), pygame.image.load("sprites/link/link_b7.png")]
-link_go_down = [pygame.image.load("sprites/link/link_f0.png"), pygame.image.load("sprites/link/link_f1.png"), pygame.image.load("sprites/link/link_f2.png"), pygame.image.load("sprites/link/link_f3.png"), pygame.image.load("sprites/link/link_f4.png"), pygame.image.load("sprites/link/link_f5.png"), pygame.image.load("sprites/link/link_f6.png"), pygame.image.load("sprites/link/link_f4.png")]
-link_go_left = [pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l1.png"), pygame.image.load("sprites/link/link_l2.png"), pygame.image.load("sprites/link/link_l0.png"), pygame.image.load("sprites/link/link_l4.png"), pygame.image.load("sprites/link/link_l5.png"), pygame.image.load("sprites/link/link_l6.png"), pygame.image.load("sprites/link/link_l7.png")]
-link_go_right = [pygame.image.load("sprites/link/link_r0.png"), pygame.image.load("sprites/link/link_r1.png"), pygame.image.load("sprites/link/link_r2.png"), pygame.image.load("sprites/link/link_r3.png"), pygame.image.load("sprites/link/link_r4.png"), pygame.image.load("sprites/link/link_r5.png"), pygame.image.load("sprites/link/link_r6.png"), pygame.image.load("sprites/link/link_r7.png")]
+#Funktionen
+def pickupitems(item_instance, x, y):
+    for item in GAME_ITEMS:
+        if player_instance.rect.left in range(x, y) and player_instance.rect.top in range(x, y) and item.placed and LEVEL == 0:
+            item_instance.placed = False
+            item_instance.picked_up = True
+    return
 
-#main loop
+#Menüschleife
+while menu.running:
+
+    menu.curr_menu.display_menu()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+    menu.running = False
+
+#Hauptschleife
 while GAME_RUNNING:
-    # GAME MAP
-    for x in range(0, MAPHEIGHT):
-        for y in range(0, MAPWIDTH):
-            texture = spielfeld[x][y].type
-            DISPLAYSURFACE.blit(TEXTURES[texture], (y * TILESIZE, x * TILESIZE))
-
-    #Spielfigursprites und Spielfigurrechteck anzeigen
-    if classlink.look == "top":
-        DISPLAYSURFACE.blit(link_go_up[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-
-    elif classlink.look == "down":
-        DISPLAYSURFACE.blit(link_go_down[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-
-    elif classlink.look == "left":
-        DISPLAYSURFACE.blit(link_go_left[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-
-    elif classlink.look == "right":
-        DISPLAYSURFACE.blit(link_go_right[classlink.sprite], (classlink.rect.left, classlink.rect.top))
 
     #Überprüfen, ob Nutzer eine Aktion durchgeführt hat
     for event in pygame.event.get():
@@ -60,45 +87,108 @@ while GAME_RUNNING:
 
     #Bewegung nach Oben
     if buffer[pygame.K_UP]:
-        classlink.look = "top"
-        DISPLAYSURFACE.blit(link_go_up[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-        if classlink.rect.top >= classlink.speed: #if Bedingung damit die figur nicht über den oberen rand hinausgeht
-            classlink.tryToMove(0, -1*classlink.speed)
-            classlink.sprite += 1
-            if classlink.sprite > 7:
-                classlink.sprite = 0
+        player_instance.tryToMove("up", LEVEL, beast_instance, ganon_instance)
 
     #Bewegung nach Unten
     elif buffer[pygame.K_DOWN]:
-        classlink.look = "down"
-        DISPLAYSURFACE.blit(link_go_down[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-        if classlink.rect.top < (MAPHEIGHT * TILESIZE) -TILESIZE: #if Bedingung damit die figur nicht über den unteren rand hinausgeht
-            classlink.tryToMove(0, classlink.speed)
-            classlink.sprite += 1
-            if classlink.sprite > 7:
-                classlink.sprite = 0
+        player_instance.tryToMove("down", LEVEL, beast_instance, ganon_instance)
 
     #Bewegung nach Rechts
     elif buffer[pygame.K_RIGHT]:
-        classlink.look = "right"
-        DISPLAYSURFACE.blit(link_go_right[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-        if classlink.rect.left < (MAPWIDTH * TILESIZE) -TILESIZE: #if Bedingung damit die figur nicht über den rechten rand hinausgeht
-            classlink.tryToMove(classlink.speed, 0)
-            classlink.sprite += 1
-            if classlink.sprite > 7:
-                classlink.sprite = 0
+        player_instance.tryToMove("right", LEVEL, beast_instance, ganon_instance)
 
     #Bewegung nach Links
     elif buffer[pygame.K_LEFT]:
-        classlink.look = "left"
-        DISPLAYSURFACE.blit(link_go_left[classlink.sprite], (classlink.rect.left, classlink.rect.top))
-        if classlink.rect.left > 0:         #if Bedingung damit die figur nicht über den linken rand hinausgeht
-            classlink.tryToMove(-1 * classlink.speed, 0)
-            classlink.sprite += 1
-            if classlink.sprite > 7:
-                classlink.sprite = 0
+        player_instance.tryToMove("left", LEVEL, beast_instance, ganon_instance)
+
+    #Schwertattacke
+    elif buffer[pygame.K_SPACE]:
+        if player_instance.look == "right" and sword_instance.picked_up and shield_instance.picked_up:
+            player_instance.spritecounter = 8
+            hitBox = player_instance.rect.copy()
+            hitBox.move_ip(50, 0)
+            if hitBox.colliderect(beast_instance.rect):
+                beast_instance.Health -= 100
+                beast_instance.alive = False
+                beast_instance.rect = pygame.Rect(1500, 1500, TILESIZE, TILESIZE)
+            elif hitBox.colliderect(ganon_instance.rect):
+                ganon_instance.Health -= 25
+                if ganon_instance.Health == 0:
+                    ganon_instance.alive = False
+
+        elif player_instance.look == "left" and sword_instance.picked_up and shield_instance.picked_up:
+            player_instance.spritecounter = 8
+            hitBox = player_instance.rect.copy()
+            hitBox.move_ip(50, 0)
+            if hitBox.colliderect(beast_instance.rect):
+                beast_instance.Health -= 100
+                beast_instance.alive = False
+                beast_instance.rect = pygame.Rect(1500, 1500, TILESIZE, TILESIZE)
+            elif hitBox.colliderect(ganon_instance.rect):
+                ganon_instance.Health -= 25
+                if ganon_instance.Health == 0:
+                    ganon_instance.alive = False
+
+    #Damit das richtige Spielerbild beim Stehen angezeigt wird
     else:
-        classlink.sprite = 0 #Damit das richtige Spielerbild beim Stehen angezeigt wird
+        player_instance.spritecounter = 0
+        player_instance.spritecounter_wolf_top_down = 0
+        player_instance.spritecounter_wolf_left_right = 0
+
+    #Verwandlung in Wolf
+    if buffer[pygame.K_LCTRL]:
+        player_instance.transform = True
+
+    #Zurückverwandlung von Wolf
+    elif buffer[pygame.K_LSHIFT]:
+        player_instance.transform = False
+
+    #Level/Map Wechsel
+    changeLevel = levelHolder[LEVEL].isOnChangePosition(player_instance)
+    if changeLevel == 'next':
+        LEVEL += 1
+        currentMap = Map(levelHolder[LEVEL].map)  # type: Map
+        player_instance.changeLevel(levelHolder[LEVEL].startPosition, currentMap)
+    elif changeLevel == 'previous':
+        LEVEL -= 1
+        currentMap = Map(levelHolder[LEVEL].map)  # type: Map
+        player_instance.changeLevel(levelHolder[LEVEL].previousPosition, currentMap)
+    currentMap.draw()
+
+    #Spieler-Lebensleiste anzeigen
+    player_health_bar_text = HEALTHFONT.render('LINK HEALTH:', True, GREEN, BLACK)
+    DISPLAYSURFACE.blit(player_health_bar_text, (15, MAPHEIGHT * TILESIZE - 700))
+    DISPLAYSURFACE.blit(HEALTHFONT.render(str(player_instance.health), True, GREEN, BLACK), (225, MAPHEIGHT * TILESIZE - 700))
+
+    #Items anzeigen
+    for item in GAME_ITEMS:
+        if item.placed and LEVEL == 0:
+            DISPLAYSURFACE.blit(item.image, (item.pos[0], item.pos[1]))
+        elif item.placed is False and item.picked_up:
+            DISPLAYSURFACE.blit(pygame.transform.scale(item.image, (40, 40)), (item.inventory_pos[0], item.inventory_pos[1]))
+
+    #Items aufheben
+    pickupitems(sword_instance, 475, 525)
+    pickupitems(shield_instance, 225,275)
+    pickupitems(bow_instance, 375, 425)
+
+    #Ganon plus Ganon-Lebensleiste anzeigen plus Ganon-rect eErstellung
+    if LEVEL == 2 and ganon_instance.alive:
+        ganon_healthbar_text = HEALTHFONT.render('GANON HEALTH:', RED, BLACK)
+        DISPLAYSURFACE.blit(ganon_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(HEALTHFONT.render(str(ganon_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(ganon_instance.Ganon, (ganon_instance.rect.x, ganon_instance.rect.y))
+
+    #Beast plus Beast-Lebensleiste anzeigen plus Beast-rect Erstellung plus Beast-bewegung
+    if LEVEL == 1 and beast_instance.alive:
+        beast_healthbar_text = HEALTHFONT.render('BEAST HEALTH:', RED, BLACK)
+        DISPLAYSURFACE.blit(beast_healthbar_text, (650, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(HEALTHFONT.render(str(beast_instance.Health), RED, BLACK), (900, MAPHEIGHT * TILESIZE - 700))
+        DISPLAYSURFACE.blit(beast_instance.Beast, (beast_instance.rect.x, beast_instance.rect.y))
+        beast_instance.move()
+
+    #Methode Spielfigur zeichnen
+    player_instance.draw()
 
     #Screen aktualisieren
     pygame.display.update()

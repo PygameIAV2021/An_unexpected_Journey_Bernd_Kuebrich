@@ -1,52 +1,152 @@
 import pygame
-from map import *
+from map import Map, TILESIZE, MAPHEIGHT, MAPWIDTH, DISPLAYSURFACE, Tiles
+from enemies import Beast, Ganon
 
-spielfeld = [[0 for y in range(MAPWIDTH)] for x in range(MAPHEIGHT)]
-
-class Spielfiguren:
-    def __init__(self, name, pos_x, pos_y, look, speed=10, sprite=0):
+#Spielerklasse
+class Player():
+    def __init__(self, name, pos, look, map: Map, speed=9, spritecounter=0, health=100, inventory = [], spritecounter_wolf_top_down = 0, spritecounter_wolf_left_right = 0):
         self.name = name
+        self.map = map
         self.speed = speed
         self.look = look
-        self.rect = pygame.Rect(pos_x, pos_y, TILESIZE, TILESIZE)
-        self.sprite = sprite
+        self.rect = pygame.Rect(pos[0], pos[1], TILESIZE, TILESIZE)
+        self.spritecounter = spritecounter
+        self.spritecounter_wolf_top_down = spritecounter_wolf_top_down
+        self.spritecounter_wolf_left_right = spritecounter_wolf_left_right
+        self.link_go_up = [pygame.image.load("sprites/link/link_b0.png"), pygame.image.load("sprites/link/link_b1.png"), pygame.image.load("sprites/link/link_b2.png"), pygame.image.load("sprites/link/link_b3.png"), pygame.image.load("sprites/link/link_b4.png"), pygame.image.load("sprites/link/link_b5.png"), pygame.image.load("sprites/link/link_b6.png"), pygame.image.load("sprites/link/link_b7.png")]
+        self.link_go_down = [pygame.image.load("sprites/link/link_f0.png"), pygame.image.load("sprites/link/link_f1.png"), pygame.image.load("sprites/link/link_f2.png"), pygame.image.load("sprites/link/link_f3.png"), pygame.image.load("sprites/link/link_f4.png"), pygame.image.load("sprites/link/link_f5.png"), pygame.image.load("sprites/link/link_f6.png"), pygame.image.load("sprites/link/link_f4.png")]
+        self.link_go_left = [pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l2.png"), pygame.image.load("sprites/link/link_l1.png"), pygame.image.load("sprites/link/link_l0.png"),  pygame.image.load("sprites/link/link_l3.png"), pygame.image.load("sprites/link/link_l4.png"), pygame.image.load("sprites/link/link_l5.png"), pygame.image.load("sprites/link/link_l6.png"), pygame.transform.scale(pygame.image.load("sprites/link.png"), (60,60,))]
+        self.link_go_right = [pygame.image.load("sprites/link/link_r0.png"), pygame.image.load("sprites/link/link_r1.png"), pygame.image.load("sprites/link/link_r2.png"), pygame.image.load("sprites/link/link_r3.png"), pygame.image.load("sprites/link/link_r4.png"), pygame.image.load("sprites/link/link_r5.png"), pygame.image.load("sprites/link/link_r6.png"), pygame.image.load("sprites/link/link_r7.png"), pygame.transform.flip(pygame.transform.scale(pygame.image.load("sprites/link.png"), (60,60)), True, False)]
+        self.health = health
+        self.inventory = inventory
+        self.wolf_go_up = [pygame.image.load("sprites/wolf/wolf_b0.png"), pygame.image.load("sprites/wolf/wolf_b1.png"), pygame.image.load("sprites/wolf/wolf_b2.png"), pygame.image.load("sprites/wolf/wolf_b3.png"), pygame.image.load("sprites/wolf/wolf_b4.png"), pygame.image.load("sprites/wolf/wolf_b5.png"), pygame.image.load("sprites/wolf/wolf_b6.png")]
+        self.wolf_go_down = [pygame.image.load("sprites/wolf/wolf_f0.png"), pygame.image.load("sprites/wolf/wolf_f1.png"), pygame.image.load("sprites/wolf/wolf_f2.png"), pygame.image.load("sprites/wolf/wolf_f3.png"), pygame.image.load("sprites/wolf/wolf_f4.png"), pygame.image.load("sprites/wolf/wolf_f5.png"), pygame.image.load("sprites/wolf/wolf_f6.png")]
+        self.wolf_go_left = [pygame.image.load("sprites/wolf/wolf_l0.png"), pygame.image.load("sprites/wolf/wolf_l1.png"), pygame.image.load("sprites/wolf/wolf_l2.png"), pygame.image.load("sprites/wolf/wolf_l3.png")]
+        self.wolf_go_right = [pygame.image.load("sprites/wolf/wolf_r0.png"), pygame.image.load("sprites/wolf/wolf_r1.png"), pygame.image.load("sprites/wolf/wolf_r2.png"), pygame.image.load("sprites/wolf/wolf_r3.png")]
+        self.transform = False
+        self.link_fight = pygame.image.load("sprites/link.png")
 
-    def tryToMove(self, diffx, diffy):
-        # diffx = 0
-        # diffy = 0
-        #
-        # if direction == 'top:
-        #     diffx = self.speed
-        # elif direction == 'left':
-        #     diffy = -1* self.speed
-        #todo: anstatt diffX und diffy einfach 'top', 'down', left, right übergeben
-        #todo: überprüfe ob man über rand geht
-        #todo: link frame machen
+    #Bewegungsmethode
+    def tryToMove(self, direction, current_level, beast: Beast, ganon: Ganon):
 
-        collisionList = [0 for x in range(MAPWIDTH*MAPHEIGHT)]
-        i = 0
-        for x in range(MAPHEIGHT):
-            for y in range(MAPWIDTH):
-                collisionList[i] = spielfeld[x][y]
-                i += 1
+        moveX, moveY = (0, 0)
 
-        self.rect.move_ip(diffx, diffy) #verändere dich um diffx und diffy
+        if direction == "down":
+            self.look = "down"
+            if self.rect.bottom < (MAPHEIGHT * TILESIZE):  # if Bedingung damit die figur nicht über den unteren rand hinausgeht
+                moveX, moveY = (0, self.speed)
+        elif direction == "up":
+            self.look = "up"
+            if self.rect.top >= self.speed: #if Bedingung damit die Figur nicht über den oberen rand hinausgeht
+                moveX, moveY = (0, -1*self.speed)
+        elif direction == "right":
+            self.look = "right"
+            if self.rect.right < (MAPWIDTH * TILESIZE):  # if Bedingung damit die figur nicht über den rechten rand hinausgeht
+                moveX, moveY = (self.speed, 0)
+        elif direction == "left":
+            self.look = "left"
+            if self.rect.left > 0:  #if Bedingung damit die figur nicht über den linken rand hinausgeht
+                moveX, moveY = (-1*self.speed, 0)
 
-        result = self.rect.collidelistall(collisionList) #liefert index (aus collisionList) von allen rects mit kollisionen
+        #Spielerfigur verändert die Position
+        self.rect.move_ip(moveX, moveY)
 
-        print("collision with: ")
+        #Rechteckliste speichern
+        rectList = self.map.returnRectList()
+
+        #liefert index (aus collisionList) von allen rects mit kollisionen
+        result = self.rect.collidelistall(rectList)
+
+        #Kollisionskontrolle mit beast
+        if beast.level == current_level and self.rect.colliderect(beast.rect):
+            self.rect.move_ip(-1 * moveX, -1 * moveY)
+
+        #Kollisionskontrolle mit Ganon
+        if ganon.level == current_level and self.rect.colliderect(ganon.rect):
+            self.rect.move_ip(-1 * moveX, -1 * moveY)
+
+        #Kollisionskontrolle mit Landschaft (Wasser, Bäume etc.)
         for index in result:
-            print(collisionList[index].type)
-            if collisionList[index].type in [Tiles.WATER, Tiles.WALL]:
-                self.rect.move_ip(-1*diffx, -1*diffy)
+            if rectList[index].type in [Tiles.WATER, Tiles.WALL, Tiles.TREE1, Tiles.TREE2]:
+                self.rect.move_ip(-1*moveX, -1*moveY)
                 return
 
-class Spielkachel(pygame.Rect):
-    def __init__(self, typ, x, y):
-        super().__init__(x, y, TILESIZE, TILESIZE)
-        self.type = typ
+        #Spritezähler Spielerfigur
+        if self.transform is False:
+            self.spritecounter += 1
+            if self.spritecounter > 7:
+                self.spritecounter = 0
 
-#Bodenkachelerkennung
-for x in range(MAPHEIGHT):
-    for y in range(MAPWIDTH):
-        spielfeld[x][y] = Spielkachel(MAP1[x][y], y*TILESIZE, x*TILESIZE)
+        #Spritezähler Spielerfigur nach Verwandlung
+        else:
+            self.spritecounter_wolf_top_down += 1
+            self.spritecounter_wolf_left_right += 1
+            if self.spritecounter_wolf_top_down > 6:
+                self.spritecounter_wolf_top_down = 0
+            if self.spritecounter_wolf_left_right > 3:
+                self.spritecounter_wolf_left_right = 0
+
+    #Spielfigur zeichnen
+    def draw(self):
+        if self.look == "up":
+            if self.transform:
+                DISPLAYSURFACE.blit(self.wolf_go_up[self.spritecounter_wolf_top_down], (self.rect.left, self.rect.top))
+            else:
+                DISPLAYSURFACE.blit(self.link_go_up[self.spritecounter], (self.rect.left, self.rect.top))
+
+        elif self.look == "down":
+            if self.transform:
+                DISPLAYSURFACE.blit(self.wolf_go_down[self.spritecounter_wolf_top_down], (self.rect.left, self.rect.top))
+            else:
+                DISPLAYSURFACE.blit(self.link_go_down[self.spritecounter], (self.rect.left, self.rect.top))
+
+        elif self.look == "left":
+            if self.transform:
+                DISPLAYSURFACE.blit(self.wolf_go_left[self.spritecounter_wolf_left_right], (self.rect.left, self.rect.top))
+            else:
+                DISPLAYSURFACE.blit(self.link_go_left[self.spritecounter], (self.rect.left, self.rect.top))
+
+        elif self.look == "right":
+            if self.transform:
+                DISPLAYSURFACE.blit(self.wolf_go_right[self.spritecounter_wolf_left_right], (self.rect.left, self.rect.top))
+            else:
+                DISPLAYSURFACE.blit(self.link_go_right[self.spritecounter], (self.rect.left, self.rect.top))
+
+    #Rect Erstellung zum Level/Map Wechsel
+    def changeLevel(self, position, map):
+        self.rect.left = position[0]
+        self.rect.top = position[1]
+        self.map = map
+
+#Klasse für das Schwert
+class Sword():
+    def __init__(self):
+        self.name = 'Sword'
+        self.image = pygame.image.load('sprites/sword.png')
+        self.pos = [500, 500]
+        self.placed = True
+        self.inventory_pos = [400, 0]
+        self.picked_up = False
+
+#Klasse für das Schild
+class Shield():
+    def __init__(self):
+        self.name= 'SHIELD'
+        self.image = pygame.image.load('sprites/shield.png')
+        self.pos = [250, 250]
+        self.placed = True
+        self.inventory_pos = [300, 0]
+        self.picked_up = False
+
+#Klasse für den Bogen
+class Bow():
+    def __init__(self):
+        self.name = 'BOW'
+        self.image = pygame.transform.scale(pygame.image.load('sprites/bow.png'), (TILESIZE, TILESIZE))
+        self.pos = [400, 400]
+        self.placed = True
+        self.inventory_pos = [350,0]
+        self.picked_up = False
+
+
+
